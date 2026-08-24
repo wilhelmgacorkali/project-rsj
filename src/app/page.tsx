@@ -10,6 +10,7 @@ import {
   Mail, 
   MapPin, 
   ArrowRight,
+  ChevronRight,
   ShieldCheck,
   Stethoscope,
   HeartHandshake,
@@ -146,6 +147,87 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sambutan Direktur Section */}
+      <section id="profil" className="py-20 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            
+            {/* Foto Direktur */}
+            <div className="lg:col-span-5 flex justify-center lg:sticky lg:top-24">
+              <div className="relative group w-full max-w-[420px]">
+                <div className="absolute -inset-1.5 bg-gradient-to-tr from-teal-500/30 to-emerald-500/20 rounded-3xl blur-lg opacity-70 group-hover:opacity-100 transition duration-500"></div>
+                <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800 bg-slate-100 dark:bg-slate-850">
+                  <img
+                    src="/rsj_dir.png"
+                    alt="dr. Prima Wulandari - Direktur RSJ Tampan Provinsi Riau"
+                    className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Teks Sambutan Direktur */}
+            <div className="lg:col-span-7 space-y-6 text-slate-700 dark:text-slate-300">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  Sambutan Direktur
+                </h2>
+                <div className="h-1 w-20 bg-teal-600 rounded-full mt-3"></div>
+              </div>
+
+              {/* Pantun Pembuka */}
+              <div className="italic text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border-l-4 border-teal-500 text-sm leading-relaxed space-y-1">
+                <p>Mencari timba si anak dara</p>
+                <p>Dibawah sarang burung tempua</p>
+                <p>Salam sembah pembuka bicara</p>
+                <p>Semoga kita sehat jiwa</p>
+              </div>
+
+              {/* Isi Sambutan */}
+              <div className="space-y-4 text-sm md:text-base leading-relaxed text-slate-600 dark:text-slate-350 text-justify">
+                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                  Assalamu&apos;alaikum warahmatullah wabarakatuh...
+                </p>
+                <p>
+                  Kesehatan Jiwa merupakan harmonisasi dalam kehidupan yang tercipta antara fungsi jiwa dengan kemampuan mengatasi problematika, Kesehatan jiwa adalah aspek penting dalam mewujudkan kesehatan secara menyeluruh. Program pemerintah terkait kesehatan jiwa sudah bertransisi dari kuratif dan rehabilitative menjadi promotive preventif. Rumah Sakit Jiwa Pemerintah diharapkan lebih mengarah pada promosi kesehatan jiwa, meningkatkan deteksi dini dan pencegahan, serta manajemen kasus yang lebih baik.
+                </p>
+                <p>
+                  Pemerintah Provinsi Riau berkomitmen untuk mencapai Suistainable Development Goals/SDGs dan Universal Health Coverage (UHC), pelayanan kesehatan mental yang komprehensif menjadi bagian dari SDGs dan UHC.
+                </p>
+                <p>
+                  Rumah Sakit Jiwa Tampan Provinsi Riau sebagai rujukan kesehatan jiwa di wilayah Provinsi Riau mendukung program pemerintah dalam mencapai tujuan Pembangunan berkelanjutan ( Suistainable Development Goals/SDGs) dan Universal Health Coverage ( UHC) untuk mengurangi prevalensi gangguan jiwa di Provinsi Riau.
+                </p>
+              </div>
+
+              {/* Pantun Penutup */}
+              <div className="italic text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border-l-4 border-teal-500 text-sm leading-relaxed space-y-1">
+                <p>Masjid alam masjid raya</p>
+                <p>Berdiri kokoh di senapelan</p>
+                <p>Mari kita sehatkan jiwa</p>
+                <p>Demi pembangunan berkelanjutan</p>
+              </div>
+
+              {/* Profil Singkat Penutup */}
+              <div className="pt-2">
+                <h4 className="text-base font-bold text-slate-900 dark:text-white">dr. Prima Wulandari</h4>
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Direktur RSJ Tampan Provinsi Riau</p>
+              </div>
+
+              <div className="pt-1">
+                <a 
+                  href="#visi"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/30 px-4 py-2 rounded-xl transition-all shadow-sm group"
+                >
+                  <span>Selengkapnya</span>
+                  <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                </a>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
@@ -298,29 +380,29 @@ export default function LandingPage() {
             {/* Social Media Icons */}
             <div className="pt-2 flex items-center gap-3">
               <a 
-                href="https://facebook.com" 
+                href="https://www.facebook.com/rsjiwatampanriau/" 
                 target="_blank" 
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
-                title="Facebook"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 hover:border-blue-600 transition-all"
+                title="Facebook RSJ Tampan"
               >
                 <Facebook size={18} />
               </a>
               <a 
-                href="https://instagram.com" 
+                href="https://www.instagram.com/rsjiwatampan/" 
                 target="_blank" 
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
-                title="Instagram"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-pink-600 hover:border-pink-600 transition-all"
+                title="Instagram RSJ Tampan"
               >
                 <Instagram size={18} />
               </a>
               <a 
-                href="https://youtube.com" 
+                href="https://www.youtube.com/channel/UCbVFneMnD59WgUFMKERQUAw" 
                 target="_blank" 
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
-                title="YouTube"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-red-600 hover:border-red-600 transition-all"
+                title="YouTube RSJ Tampan"
               >
                 <Youtube size={18} />
               </a>
