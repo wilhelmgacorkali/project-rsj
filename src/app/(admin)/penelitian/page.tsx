@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import { usePersistentData, PenelitianData } from "@/hooks/usePersistentData";
-import { 
-  BookOpen, 
-  Search, 
-  Plus, 
-  Trash2, 
-  Filter, 
-  X, 
-  PlusCircle, 
-  Building2, 
+import {
+  BookOpen,
+  Search,
+  Plus,
+  Trash2,
+  Filter,
+  X,
+  PlusCircle,
+  Building2,
   FileText,
   Calendar,
   Edit3,
@@ -244,7 +244,7 @@ export default function PenelitianPage() {
             <p>Pekanbaru, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
             <p>Ketua Tim Riset & Litbang RSJ</p>
             <div class="signature-space"></div>
-            <p><strong><u>Dr. dr. H. Syamsudin, Sp.KJ</u></strong></p>
+            <p><strong><u>Dr.Wilhelm Samto Tamba, Sp.Tr.Kom</u></strong></p>
             <p>NIP. 19720315 200003 1 004</p>
           </div>
         </div>
@@ -279,11 +279,11 @@ export default function PenelitianPage() {
   };
 
   const filteredData = penelitianList.filter((item) => {
-    const matchesSearch = 
+    const matchesSearch =
       item.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.institusi.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.judulPenelitian.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
     const matchesFilter = statusFilter === "Semua" || item.status === statusFilter;
     return matchesSearch && matchesFilter;
   });
@@ -311,11 +311,10 @@ export default function PenelitianPage() {
               setIsFormOpen(true);
             }
           }}
-          className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md ${
-            isFormOpen 
-              ? "bg-slate-100 dark:bg-[#151521] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" 
+          className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md ${isFormOpen
+              ? "bg-slate-100 dark:bg-[#151521] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800"
               : "bg-teal-600 hover:bg-teal-700 text-white dark:bg-[#c5f1e7] dark:text-[#1a1c23] dark:hover:bg-[#aeead9]"
-          }`}
+            }`}
         >
           {isFormOpen ? <X size={16} /> : <Plus size={16} />}
           <span>{isFormOpen ? "Tutup Form" : "Tambah Peneliti Baru"}</span>
@@ -331,7 +330,7 @@ export default function PenelitianPage() {
               {editingId ? "Perbarui Data Pengajuan Riset" : "Formulir Pengajuan Penelitian Baru"}
             </h3>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Nama Peneliti</label>
@@ -343,7 +342,7 @@ export default function PenelitianPage() {
                 className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#151521] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-sm transition-all"
               />
             </div>
-            
+
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Asal Institusi / Lembaga</label>
               <input
@@ -484,13 +483,12 @@ export default function PenelitianPage() {
                       </div>
                     </td>
                     <td className="py-4 px-5">
-                      <span className={`text-[11px] font-bold px-3 py-1 rounded-full inline-block ${
-                        item.status === "Disetujui" 
+                      <span className={`text-[11px] font-bold px-3 py-1 rounded-full inline-block ${item.status === "Disetujui"
                           ? "bg-teal-50 text-teal-700 dark:bg-[#c5f1e7]/10 dark:text-[#c5f1e7] border border-teal-500/20" :
-                        item.status === "Ditolak" 
-                          ? "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-500/20" 
-                          : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-500/20"
-                      }`}>
+                          item.status === "Ditolak"
+                            ? "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-500/20"
+                            : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-500/20"
+                        }`}>
                         {item.status}
                       </span>
                     </td>
@@ -579,7 +577,7 @@ export default function PenelitianPage() {
                 <X size={20} />
               </button>
             </div>
-            
+
             {/* Modal Body */}
             <div className="p-6 overflow-y-auto">
               <div className="space-y-6">
@@ -597,18 +595,17 @@ export default function PenelitianPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex-1 space-y-4">
                     <div>
                       <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status Berkas</label>
                       <div className="mt-2">
-                        <span className={`text-xs font-bold px-3 py-1.5 rounded-full inline-block ${
-                          selectedItem.status === "Disetujui" 
+                        <span className={`text-xs font-bold px-3 py-1.5 rounded-full inline-block ${selectedItem.status === "Disetujui"
                             ? "bg-teal-50 text-teal-700 dark:bg-[#c5f1e7]/10 dark:text-[#c5f1e7] border border-teal-500/20" :
-                          selectedItem.status === "Ditolak" 
-                            ? "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-500/20" 
-                            : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-500/20"
-                        }`}>
+                            selectedItem.status === "Ditolak"
+                              ? "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-500/20"
+                              : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-500/20"
+                          }`}>
                           {selectedItem.status}
                         </span>
                       </div>
@@ -622,7 +619,7 @@ export default function PenelitianPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="pt-4 border-t border-slate-100 dark:border-white/5">
                   <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Judul Penelitian</label>
                   <div className="mt-2 p-4 bg-slate-50 dark:bg-[#151521] rounded-xl border border-slate-100 dark:border-white/5 text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
@@ -631,7 +628,7 @@ export default function PenelitianPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Modal Footer */}
             <div className="p-6 border-t border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-[#151521] flex justify-end gap-3">
               <button

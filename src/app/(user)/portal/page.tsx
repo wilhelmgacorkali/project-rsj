@@ -275,7 +275,7 @@ export default function PortalPage() {
             <p>Pekanbaru, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
             <p>${isMagang ? 'Kepala Bagian Diklat RSJ' : 'Ketua Tim Riset & Litbang RSJ'}</p>
             <div class="signature-space"></div>
-            <p><strong><u>Dr. dr. H. Syamsudin, Sp.KJ</u></strong></p>
+            <p><strong><u>Dr.Wilhelm Samto Tamba, Sp.Tr.Kom</u></strong></p>
             <p>NIP. 19720315 200003 1 004</p>
           </div>
         </div>
