@@ -29,7 +29,7 @@ export default function Dashboard() {
   // Calculate statistics
   const totalMagang = magangList.length || 120;
   const totalPenelitian = penelitianList.length || 45;
-  const totalSelesai = magangList.filter(m => m.status === "Selesai").length + penelitianList.filter(p => p.status === "Selesai" || p.status === "Disetujui").length || 85;
+  const totalSelesai = magangList.filter(m => m.status === "Selesai").length + penelitianList.filter(p => p.status === "Disetujui").length || 85;
   const totalPending = magangList.filter(m => m.status === "Menunggu").length + penelitianList.filter(p => p.status === "Ditinjau").length || 12;
 
   return (
@@ -349,6 +349,79 @@ export default function Dashboard() {
             </div>
           </div>
           
+        </div>
+      </div>
+
+
+      {/* Menunggu Verifikasi Section */}
+      <div className="bg-white dark:bg-[#1a1c23] rounded-2xl border border-slate-200/80 dark:border-transparent shadow-sm overflow-hidden transition-colors duration-200 mt-6">
+        <div className="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Menunggu Verifikasi</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Daftar pengajuan terbaru dari mahasiswa yang perlu ditelaah.</p>
+          </div>
+          <span className="bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 text-xs font-bold px-3 py-1 rounded-full border border-rose-500/20">
+            {totalPending} Perlu Tindakan
+          </span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-[#151521]/60 border-b border-slate-200/80 dark:border-white/5 text-slate-500 dark:text-slate-400">
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-wider">Nama & Instansi</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-wider">Tipe Pengajuan</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-wider">Tanggal Masuk</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-wider text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+              <tr className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                <td className="py-4 px-6">
+                  <div className="font-semibold text-slate-900 dark:text-white text-sm">Budi Santoso</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Universitas Riau - Ilmu Komputer</div>
+                </td>
+                <td className="py-4 px-6">
+                  <span className="text-xs font-medium text-teal-700 bg-teal-50 dark:bg-[#c5f1e7]/10 dark:text-[#c5f1e7] px-2.5 py-1 rounded-md border border-teal-500/20">
+                    Anak Magang
+                  </span>
+                </td>
+                <td className="py-4 px-6 text-sm text-slate-600 dark:text-slate-400">Hari ini, 09:30</td>
+                <td className="py-4 px-6 text-right">
+                  <button 
+                    onClick={() => {
+                      alert("Berkas sedang diverifikasi!");
+                      // Dalam implementasi nyata, ini akan memperbarui status di state
+                    }}
+                    className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white dark:bg-[#c5f1e7] dark:hover:bg-[#aeead9] dark:text-[#1a1c23] px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm"
+                  >
+                    Verifikasi Berkas
+                  </button>
+                </td>
+              </tr>
+              <tr className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                <td className="py-4 px-6">
+                  <div className="font-semibold text-slate-900 dark:text-white text-sm">Siti Aminah</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Universitas Andalas - Psikologi</div>
+                </td>
+                <td className="py-4 px-6">
+                  <span className="text-xs font-medium text-blue-700 bg-blue-50 dark:bg-blue-500/10 dark:text-blue-400 px-2.5 py-1 rounded-md border border-blue-500/20">
+                    Penelitian
+                  </span>
+                </td>
+                <td className="py-4 px-6 text-sm text-slate-600 dark:text-slate-400">Kemarin, 14:15</td>
+                <td className="py-4 px-6 text-right">
+                  <button 
+                    onClick={() => {
+                      alert("Berkas sedang diverifikasi!");
+                    }}
+                    className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white dark:bg-[#c5f1e7] dark:hover:bg-[#aeead9] dark:text-[#1a1c23] px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm"
+                  >
+                    Verifikasi Berkas
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

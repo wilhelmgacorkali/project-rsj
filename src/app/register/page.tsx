@@ -75,7 +75,7 @@ export default function RegisterPage() {
               onClick={() => setRole("magang")}
               className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${
                 role === "magang"
-                  ? "bg-white dark:bg-slate-900 text-teal-600 dark:text-teal-400 shadow-sm"
+                  ? "bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 shadow-sm"
                   : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-350"
               }`}
             >
@@ -86,7 +86,7 @@ export default function RegisterPage() {
               onClick={() => setRole("peneliti")}
               className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${
                 role === "peneliti"
-                  ? "bg-white dark:bg-slate-900 text-teal-600 dark:text-teal-400 shadow-sm"
+                  ? "bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 shadow-sm"
                   : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-350"
               }`}
             >
@@ -179,7 +179,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center items-center gap-2 bg-teal-650 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-md shadow-teal-650/15 disabled:opacity-50"
+                className="w-full flex justify-center items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-md shadow-teal-600/15 disabled:opacity-50"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -196,7 +196,7 @@ export default function RegisterPage() {
           <div className="border-t border-slate-100 dark:border-slate-800 pt-5 text-center">
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Sudah punya akun?{" "}
-              <Link href="/login" className="font-bold text-teal-650 hover:underline">
+              <Link href="/login" className="font-bold text-teal-600 hover:underline">
                 Masuk Sekarang
               </Link>
             </p>

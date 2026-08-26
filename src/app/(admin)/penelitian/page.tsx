@@ -16,7 +16,8 @@ import {
   Edit3,
   FileDown,
   Eye,
-  Info
+  Info,
+  Check
 } from "lucide-react";
 
 export default function PenelitianPage() {
@@ -495,38 +496,49 @@ export default function PenelitianPage() {
                     </td>
                     <td className="py-4 px-5">
                       <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => setSelectedItem(item)}
-                          className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all border border-indigo-500/20"
-                          title="Lihat Selengkapnya"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleGeneratePDF(item)}
-                          className="p-2 rounded-lg bg-teal-50 dark:bg-[#c5f1e7]/10 text-teal-700 dark:text-[#c5f1e7] hover:bg-teal-100 dark:hover:bg-[#c5f1e7]/20 transition-all border border-teal-500/20"
-                          title="Cetak Surat Izin Riset"
-                        >
-                          <FileDown size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleOpenEdit(item)}
-                          className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all border border-blue-500/20"
-                          title="Ubah Data"
-                        >
-                          <Edit3 size={16} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Yakin ingin menghapus data riset "${item.nama}"?`)) {
-                              deletePenelitian(item.id);
-                            }
-                          }}
-                          className="p-2 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all border border-rose-500/20"
-                          title="Hapus Data"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {/* Verify (Approve) */}
+                        {item.status === "Ditinjau" && (
+                          <button
+                            onClick={() => {
+                              if (confirm(`Verifikasi dan setujui pengajuan penelitian "${item.nama}"?`)) {
+                                updatePenelitian(item.id, { status: "Disetujui" });
+                              }
+                            }}
+                            className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all border border-emerald-500/20"
+                            title="Verifikasi (Setujui)"
+                          >
+                            <Check size={16} strokeWidth={3} />
+                          </button>
+                        )}
+                        {/* Reject */}
+                        {item.status === "Ditinjau" && (
+                          <button
+                            onClick={() => {
+                              if (confirm(`Tolak pengajuan penelitian "${item.nama}"?`)) {
+                                updatePenelitian(item.id, { status: "Ditolak" });
+                              }
+                            }}
+                            className="p-2 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all border border-rose-500/20"
+                            title="Tolak"
+                          >
+                            <X size={16} />
+                          </button>
+                        )}
+                        {/* View File */}
+                        {item.fileName && (
+                          <button
+                            onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = item.fileData || '';
+                              link.download = item.fileName || '';
+                              link.click();
+                            }}
+                            className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all border border-indigo-500/20"
+                            title="Lihat Berkas"
+                          >
+                            <Eye size={16} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

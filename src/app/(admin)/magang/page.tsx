@@ -17,7 +17,8 @@ import {
   Edit3,
   FileDown,
   Eye,
-  Info
+  Info,
+  Check
 } from "lucide-react";
 
 export default function MagangPage() {
@@ -35,7 +36,7 @@ export default function MagangPage() {
   const [periodeMulai, setPeriodeMulai] = useState("");
   const [periodeSelesai, setPeriodeSelesai] = useState("");
   const [unitKerja, setUnitKerja] = useState("");
-  const [status, setStatus] = useState<"Aktif" | "Selesai" | "Menunggu">("Aktif");
+  const [status, setStatus] = useState<"Aktif" | "Selesai" | "Menunggu" | "Ditolak">("Aktif");
 
   if (!isLoaded) {
     return (
@@ -523,40 +524,87 @@ export default function MagangPage() {
                       </span>
                     </td>
                     <td className="py-4 px-5">
-                      <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => setSelectedItem(item)}
-                          className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all border border-indigo-500/20"
-                          title="Lihat Selengkapnya"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleGeneratePDF(item)}
-                          className="p-2 rounded-lg bg-teal-50 dark:bg-[#c5f1e7]/10 text-teal-700 dark:text-[#c5f1e7] hover:bg-teal-100 dark:hover:bg-[#c5f1e7]/20 transition-all border border-teal-500/20"
-                          title="Cetak Surat Penerimaan"
-                        >
-                          <FileDown size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleOpenEdit(item)}
-                          className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all border border-blue-500/20"
-                          title="Ubah Data"
-                        >
-                          <Edit3 size={16} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Yakin ingin menghapus data "${item.nama}"?`)) {
-                              deleteMagang(item.id);
-                            }
-                          }}
-                          className="p-2 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all border border-rose-500/20"
-                          title="Hapus Data"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
+                        <div className="flex items-center justify-center gap-2">
+                          {/* Verify (Approve) */}
+                          {item.status === "Menunggu" && (
+                            <button
+                              onClick={() => {
+                                if (confirm(`Verifikasi dan setujui magang "${item.nama}"?`)) {
+                                  updateMagang(item.id, { ...item, status: "Aktif" });
+                                }
+                              }}
+                              className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all border border-emerald-500/20"
+                              title="Verifikasi (Setujui)"
+                            >
+                              <Check size={16} strokeWidth={3} />
+                            </button>
+                          )}
+                          {/* Reject */}
+                          {item.status === "Menunggu" && (
+                            <button
+                              onClick={() => {
+                                if (confirm(`Tolak magang "${item.nama}"?`)) {
+                                  updateMagang(item.id, { status: "Ditolak" });
+                                }
+                              }}
+                              className="p-2 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all border border-rose-500/20"
+                              title="Tolak"
+                            >
+                              <X size={16} />
+                            </button>
+                          )}
+                          {/* View File */}
+                          {item.fileName && (
+                            <button
+                              onClick={() => {
+                                const link = document.createElement('a');
+                                link.href = item.fileData || '';
+                                link.download = item.fileName || '';
+                                link.click();
+                              }}
+                              className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all border border-indigo-500/20"
+                              title="Lihat Berkas"
+                            >
+                              <Eye size={16} />
+                            </button>
+                          )}
+                          {/* View Details */}
+                          <button
+                            onClick={() => setSelectedItem(item)}
+                            className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all border border-indigo-500/20"
+                            title="Lihat Selengkapnya"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          {/* Generate PDF */}
+                          <button
+                            onClick={() => handleGeneratePDF(item)}
+                            className="p-2 rounded-lg bg-teal-50 dark:bg-[#c5f1e7]/10 text-teal-700 dark:text-[#c5f1e7] hover:bg-teal-100 dark:hover:bg-[#c5f1e7]/20 transition-all border border-teal-500/20"
+                            title="Cetak Surat Penerimaan"
+                          >
+                            <FileDown size={16} />
+                          </button>
+                          {/* Edit */}
+                          <button
+                            onClick={() => handleOpenEdit(item)}
+                            className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all border border-blue-500/20"
+                            title="Ubah Data"
+                          >
+                            <Edit3 size={16} />
+                          </button>
+                          {/* Delete */}
+                          <button
+                            onClick={() => {
+                              if (confirm(`Yakin ingin menghapus data "${item.nama}"?`)) {
+                                deleteMagang(item.id);
+                              }
+                            }}
+                            className="p-2 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all border border-rose-500/20"
+                            title="Hapus Data"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                     </td>
                   </tr>
                 ))

@@ -89,7 +89,7 @@ export default function LoginPage() {
                 <label htmlFor="password" className="block text-xs font-semibold text-slate-550 dark:text-slate-400 uppercase tracking-wider">
                   Kata Sandi
                 </label>
-                <Link href="#" className="text-xs font-semibold text-teal-650 hover:underline">
+                <Link href="#" className="text-xs font-semibold text-teal-600 hover:underline">
                   Lupa sandi?
                 </Link>
               </div>
@@ -126,7 +126,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center items-center gap-2 bg-teal-650 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-md shadow-teal-650/15 disabled:opacity-50"
+                className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-md shadow-teal-600/15 disabled:opacity-50"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -143,7 +143,7 @@ export default function LoginPage() {
           <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-5 text-center">
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Belum terdaftar?{" "}
-              <Link href="/register" className="font-bold text-teal-650 hover:underline">
+              <Link href="/register" className="font-bold text-teal-600 hover:underline">
                 Buat Akun Baru
               </Link>
             </p>
