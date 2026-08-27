@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
+import { loginUserAction } from "@/app/actions";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError("Email dan password harus diisi!");
@@ -27,13 +28,19 @@ export default function AdminLoginPage() {
     setIsLoading(true);
     setError("");
 
-    // Simulate admin login success and redirect to admin dashboard
-    setTimeout(() => {
+    try {
+      const res = await loginUserAction(email, password);
       setIsLoading(false);
-      const currentUser = { nama: "Administrator", email, institusi: "RS Jiwa Tampan", role: "admin" };
-      localStorage.setItem("rsj_current_user", JSON.stringify(currentUser));
-      router.push("/dashboard");
-    }, 1200);
+      if (res.success && res.user) {
+        localStorage.setItem("rsj_current_user", JSON.stringify(res.user));
+        router.push("/dashboard");
+      } else {
+        setError(res.error || "Email atau password salah!");
+      }
+    } catch (err: any) {
+      setIsLoading(false);
+      setError("Terjadi kesalahan jaringan atau server.");
+    }
   };
 
   return (

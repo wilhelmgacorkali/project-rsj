@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
+import { loginUserAction } from "@/app/actions";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError("Email dan password harus diisi!");
@@ -27,28 +28,19 @@ export default function LoginPage() {
     setIsLoading(true);
     setError("");
 
-    // Simulate login success and redirect
-    setTimeout(() => {
+    try {
+      const res = await loginUserAction(email, password);
       setIsLoading(false);
-      
-      const users = JSON.parse(localStorage.getItem("rsj_users") || "[]");
-      const matchedUser = users.find((u: any) => u.email.toLowerCase() === email.toLowerCase());
-      
-      let currentUser = null;
-      if (matchedUser) {
-        currentUser = { 
-          nama: matchedUser.nama, 
-          email: matchedUser.email, 
-          institusi: matchedUser.institusi, 
-          role: matchedUser.role 
-        };
+      if (res.success && res.user) {
+        localStorage.setItem("rsj_current_user", JSON.stringify(res.user));
+        router.push("/portal");
       } else {
-        // Fallback if they didn't register first
-        currentUser = { nama: "Budi Santoso", email, institusi: "Universitas Riau", role: "magang" };
+        setError(res.error || "Email atau password salah!");
       }
-      localStorage.setItem("rsj_current_user", JSON.stringify(currentUser));
-      router.push("/portal");
-    }, 1200);
+    } catch (err: any) {
+      setIsLoading(false);
+      setError("Terjadi kesalahan jaringan atau server.");
+    }
   };
 
   return (

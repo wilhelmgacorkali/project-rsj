@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { registerUserAction } from "@/app/actions";
 import { 
   User, 
   Mail, 
@@ -23,7 +24,7 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nama || !email || !password || !institusi) {
       setError("Harap isi semua kolom pendaftaran!");
@@ -33,19 +34,19 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
 
-    // Simulate registration and save to localStorage
-    setTimeout(() => {
+    try {
+      const res = await registerUserAction({ nama, email, password, institusi, role });
       setIsLoading(false);
-      
-      const users = JSON.parse(localStorage.getItem("rsj_users") || "[]");
-      // Prevent duplicates by email
-      const filtered = users.filter((u: any) => u.email.toLowerCase() !== email.toLowerCase());
-      filtered.push({ nama, email, password, institusi, role });
-      localStorage.setItem("rsj_users", JSON.stringify(filtered));
-
-      alert("Pendaftaran Akun Berhasil! Silakan masuk.");
-      router.push("/login");
-    }, 1200);
+      if (res.success) {
+        alert("Pendaftaran Akun Berhasil! Silakan masuk.");
+        router.push("/login");
+      } else {
+        setError(res.error || "Gagal melakukan pendaftaran akun.");
+      }
+    } catch (err: any) {
+      setIsLoading(false);
+      setError("Terjadi kesalahan jaringan atau server.");
+    }
   };
 
   return (
