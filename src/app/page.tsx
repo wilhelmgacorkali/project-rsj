@@ -130,7 +130,7 @@ export default function LandingPage() {
                 <ArrowRight size={18} />
               </Link>
               <Link 
-                href="/login" 
+                href="/admin-login" 
                 className="inline-flex items-center justify-center gap-2 bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-700 hover:bg-slate-800 text-white font-bold px-6 py-3.5 rounded-xl text-base transition-all"
               >
                 <span>Dashboard Admin</span>

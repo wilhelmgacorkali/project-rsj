@@ -19,6 +19,11 @@ export default function LoginPage() {
       return;
     }
 
+    if (email.toLowerCase().includes("admin")) {
+      setError("Email admin terdeteksi. Silakan masuk melalui Halaman Login Admin khusus.");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -30,25 +35,19 @@ export default function LoginPage() {
       const matchedUser = users.find((u: any) => u.email.toLowerCase() === email.toLowerCase());
       
       let currentUser = null;
-      if (email.toLowerCase().includes("admin")) {
-        currentUser = { nama: "Admin RSJ", email, institusi: "RS Jiwa Tampan", role: "admin" };
-        localStorage.setItem("rsj_current_user", JSON.stringify(currentUser));
-        router.push("/dashboard");
+      if (matchedUser) {
+        currentUser = { 
+          nama: matchedUser.nama, 
+          email: matchedUser.email, 
+          institusi: matchedUser.institusi, 
+          role: matchedUser.role 
+        };
       } else {
-        if (matchedUser) {
-          currentUser = { 
-            nama: matchedUser.nama, 
-            email: matchedUser.email, 
-            institusi: matchedUser.institusi, 
-            role: matchedUser.role 
-          };
-        } else {
-          // Fallback if they didn't register first
-          currentUser = { nama: "Budi Santoso", email, institusi: "Universitas Riau", role: "magang" };
-        }
-        localStorage.setItem("rsj_current_user", JSON.stringify(currentUser));
-        router.push("/portal");
+        // Fallback if they didn't register first
+        currentUser = { nama: "Budi Santoso", email, institusi: "Universitas Riau", role: "magang" };
       }
+      localStorage.setItem("rsj_current_user", JSON.stringify(currentUser));
+      router.push("/portal");
     }, 1200);
   };
 
@@ -163,11 +162,17 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-5 text-center">
+          <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-5 text-center space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Belum terdaftar?{" "}
-              <Link href="/register" className="font-bold text-teal-600 hover:underline">
+              <Link href="/register" className="font-bold text-teal-650 hover:underline">
                 Buat Akun Baru
+              </Link>
+            </p>
+            <p className="text-xs text-slate-400">
+              Masuk sebagai petugas?{" "}
+              <Link href="/admin-login" className="font-bold text-indigo-600 hover:underline">
+                Halaman Login Admin
               </Link>
             </p>
           </div>
