@@ -22,10 +22,33 @@ export default function LoginPage() {
     setIsLoading(true);
     setError("");
 
-    // Simulate login success and redirect to dashboard
+    // Simulate login success and redirect
     setTimeout(() => {
       setIsLoading(false);
-      router.push("/dashboard");
+      
+      const users = JSON.parse(localStorage.getItem("rsj_users") || "[]");
+      const matchedUser = users.find((u: any) => u.email.toLowerCase() === email.toLowerCase());
+      
+      let currentUser = null;
+      if (email.toLowerCase().includes("admin")) {
+        currentUser = { nama: "Admin RSJ", email, institusi: "RS Jiwa Tampan", role: "admin" };
+        localStorage.setItem("rsj_current_user", JSON.stringify(currentUser));
+        router.push("/dashboard");
+      } else {
+        if (matchedUser) {
+          currentUser = { 
+            nama: matchedUser.nama, 
+            email: matchedUser.email, 
+            institusi: matchedUser.institusi, 
+            role: matchedUser.role 
+          };
+        } else {
+          // Fallback if they didn't register first
+          currentUser = { nama: "Budi Santoso", email, institusi: "Universitas Riau", role: "magang" };
+        }
+        localStorage.setItem("rsj_current_user", JSON.stringify(currentUser));
+        router.push("/portal");
+      }
     }, 1200);
   };
 

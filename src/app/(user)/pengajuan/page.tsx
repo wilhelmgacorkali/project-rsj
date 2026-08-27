@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { UploadCloud, File as FileIcon, Check, AlertCircle } from "lucide-react";
 import { usePersistentData, MagangData } from "@/hooks/usePersistentData";
@@ -10,6 +10,22 @@ import { useRouter } from "next/navigation";
 export default function PengajuanPage() {
   const router = useRouter();
   const { addMagang, addPenelitian } = usePersistentData();
+  const [currentUser, setCurrentUser] = useState({ nama: "Budi Santoso", institusi: "Universitas Riau" });
+
+  useEffect(() => {
+    const stored = localStorage.getItem("rsj_current_user");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.nama) {
+          setCurrentUser({
+            nama: parsed.nama,
+            institusi: parsed.institusi || "Universitas Riau"
+          });
+        }
+      } catch (e) {}
+    }
+  }, []);
 
   const [fileData, setFileData] = useState<string | undefined>(undefined);
   const [file, setFile] = useState<File | null>(null);
@@ -60,8 +76,8 @@ export default function PengajuanPage() {
     setTimeout(() => {
       if (tipePengajuan === "magang") {
         addMagang({
-          nama: "Budi Santoso",
-          universitas: "Universitas Riau",
+          nama: currentUser.nama,
+          universitas: currentUser.institusi,
           jurusan: jurusan,
           periodeMulai: periodeMulai,
           periodeSelesai: periodeSelesai,
@@ -72,8 +88,8 @@ export default function PengajuanPage() {
         });
       } else {
         addPenelitian({
-          nama: "Budi Santoso",
-          institusi: "Universitas Riau",
+          nama: currentUser.nama,
+          institusi: currentUser.institusi,
           judulPenelitian: judulKegiatan,
           periodeMulai: periodeMulai,
           periodeSelesai: periodeSelesai,

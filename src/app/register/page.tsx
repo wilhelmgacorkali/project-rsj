@@ -33,9 +33,16 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
 
-    // Simulate registration and redirect to login
+    // Simulate registration and save to localStorage
     setTimeout(() => {
       setIsLoading(false);
+      
+      const users = JSON.parse(localStorage.getItem("rsj_users") || "[]");
+      // Prevent duplicates by email
+      const filtered = users.filter((u: any) => u.email.toLowerCase() !== email.toLowerCase());
+      filtered.push({ nama, email, password, institusi, role });
+      localStorage.setItem("rsj_users", JSON.stringify(filtered));
+
       alert("Pendaftaran Akun Berhasil! Silakan masuk.");
       router.push("/login");
     }, 1200);

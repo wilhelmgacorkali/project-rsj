@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePersistentData, MagangData, PenelitianData } from "@/hooks/usePersistentData";
 import { 
@@ -30,6 +30,22 @@ type AppEntry = {
 export default function PortalPage() {
   const { magangList, penelitianList, isLoaded } = usePersistentData();
   const [selectedDetail, setSelectedDetail] = useState<AppEntry | null>(null);
+  const [currentUser, setCurrentUser] = useState({ nama: "Budi Santoso", firstName: "Budi" });
+
+  useEffect(() => {
+    const stored = localStorage.getItem("rsj_current_user");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.nama) {
+          setCurrentUser({
+            nama: parsed.nama,
+            firstName: parsed.nama.split(" ")[0]
+          });
+        }
+      } catch (e) {}
+    }
+  }, []);
 
   if (!isLoaded) {
     return (
@@ -40,8 +56,8 @@ export default function PortalPage() {
   }
 
   // Filter data yang milik user ini (hardcoded "Budi Santoso" untuk demo)
-  const myMagang = magangList.filter(m => m.nama === "Budi Santoso");
-  const myPenelitian = penelitianList.filter(p => p.nama === "Budi Santoso");
+  const myMagang = magangList.filter(m => m.nama === currentUser.nama);
+  const myPenelitian = penelitianList.filter(p => p.nama === currentUser.nama);
   const allApplications: AppEntry[] = [
     ...myMagang.map(m => ({
       id: m.id,
@@ -275,7 +291,7 @@ export default function PortalPage() {
             <p>Pekanbaru, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
             <p>${isMagang ? 'Kepala Bagian Diklat RSJ' : 'Ketua Tim Riset & Litbang RSJ'}</p>
             <div class="signature-space"></div>
-            <p><strong><u>Dr.Wilhelm Samto Tamba, S.Tr.Kom</u></strong></p>
+            <p><strong><u>Dr.Wilhelm Samto Tamba, S.Tr.Kom,M.Tr.Kom. </u></strong></p>
             <p>NIP. 19720315 200003 1 004</p>
           </div>
         </div>
@@ -339,7 +355,7 @@ export default function PortalPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Selamat Datang, Budi!</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Selamat Datang, {currentUser.firstName}!</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Pantau status pengajuan magang atau penelitian Anda di sini.</p>
         </div>
         <Link 

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, User, LogOut, FileText, Home } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function UserLayout({
   children,
@@ -12,6 +12,22 @@ export default function UserLayout({
 }) {
   const pathname = usePathname();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [currentUser, setCurrentUser] = useState({ nama: "Budi Santoso", institusi: "Universitas Riau" });
+
+  useEffect(() => {
+    const stored = localStorage.getItem("rsj_current_user");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.nama) {
+          setCurrentUser({
+            nama: parsed.nama,
+            institusi: parsed.institusi || "Universitas Riau"
+          });
+        }
+      } catch (e) {}
+    }
+  }, []);
 
   const navLinks = [
     { href: "/portal", label: "Beranda", icon: Home },
@@ -76,8 +92,8 @@ export default function UserLayout({
                   className="flex items-center gap-2 pl-2 pr-1 py-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   <div className="text-right hidden sm:block">
-                    <p className="text-xs font-bold text-slate-700 dark:text-slate-200">Budi Santoso</p>
-                    <p className="text-[10px] text-slate-500">Universitas Riau</p>
+                    <p className="text-xs font-bold text-slate-700 dark:text-slate-200">{currentUser.nama}</p>
+                    <p className="text-[10px] text-slate-500">{currentUser.institusi}</p>
                   </div>
                   <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center text-white shadow-sm">
                     <User size={16} />
@@ -88,8 +104,8 @@ export default function UserLayout({
                 {showProfileMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden py-1">
                     <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 sm:hidden">
-                      <p className="text-sm font-bold text-slate-700 dark:text-slate-200">Budi Santoso</p>
-                      <p className="text-xs text-slate-500">Universitas Riau</p>
+                      <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{currentUser.nama}</p>
+                      <p className="text-xs text-slate-500">{currentUser.institusi}</p>
                     </div>
                     <Link href="/portal/profil" className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                       <User size={16} />
