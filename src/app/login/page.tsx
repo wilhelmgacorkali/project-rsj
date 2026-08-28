@@ -39,7 +39,10 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       setIsLoading(false);
-      setError("Terjadi kesalahan jaringan atau server.");
+      setError(
+        err?.message ||
+        "Gagal terhubung ke database. Silakan coba lagi."
+      );
     }
   };
 

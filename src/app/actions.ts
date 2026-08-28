@@ -1,6 +1,6 @@
 "use server";
 
-import sql from "@/lib/db";
+import db from "@/lib/db";
 import { MagangData, PenelitianData } from "@/hooks/usePersistentData";
 
 // ─── AUTHENTICATION ACTIONS ──────────────────────────────────────────
@@ -13,49 +13,73 @@ export async function registerUserAction(userData: {
   role: string;
 }) {
   try {
-    const result = await sql`
-      INSERT INTO rsj_users (nama, email, password, institusi, role)
-      VALUES (${userData.nama}, ${userData.email}, ${userData.password}, ${userData.institusi}, ${userData.role})
-      RETURNING id, nama, email, institusi, role
-    `;
-    return { success: true, user: result[0] };
-  } catch (error: any) {
-    console.error("registerUserAction error:", error);
-    // Custom error message for duplicate email
-    if (error.message?.includes("unique constraint") || error.code === "23505") {
+    const checkStmt = db.prepare("SELECT id FROM rsj_users WHERE LOWER(email) = LOWER(?)");
+    const existing = checkStmt.get(userData.email);
+    if (existing) {
       return { success: false, error: "Alamat email ini sudah terdaftar!" };
     }
+
+    const insertStmt = db.prepare(`
+      INSERT INTO rsj_users (nama, email, password, institusi, role)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+
+    const result = insertStmt.run(
+      userData.nama,
+      userData.email,
+      userData.password,
+      userData.institusi,
+      userData.role
+    );
+
+    const newUser = db.prepare(`
+      SELECT id, nama, email, institusi, role
+      FROM rsj_users
+      WHERE id = ?
+    `).get(result.lastInsertRowid);
+
+    return { success: true, user: newUser };
+  } catch (error: any) {
+    console.error("registerUserAction error:", error);
+
+    if (error.message?.includes("UNIQUE constraint failed") || error.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      return { success: false, error: "Alamat email ini sudah terdaftar!" };
+    }
+
     return { success: false, error: error.message || "Gagal melakukan registrasi." };
   }
 }
 
 export async function loginUserAction(email: string, password: string) {
   try {
-    const result = await sql`
+    const stmt = db.prepare(`
       SELECT id, nama, email, password, institusi, role
       FROM rsj_users
-      WHERE LOWER(email) = LOWER(${email})
-    `;
-    if (result.length === 0) {
+      WHERE LOWER(email) = LOWER(?)
+    `);
+    const user = stmt.get(email) as any;
+
+    if (!user) {
       return { success: false, error: "Email atau password salah!" };
     }
-    const user = result[0];
+
     if (user.password !== password) {
       return { success: false, error: "Email atau password salah!" };
     }
-    return { 
-      success: true, 
+
+    return {
+      success: true,
       user: {
         id: user.id,
         nama: user.nama,
         email: user.email,
         institusi: user.institusi,
         role: user.role
-      } 
+      }
     };
   } catch (error: any) {
     console.error("loginUserAction error:", error);
-    return { success: false, error: error.message || "Gagal melakukan verifikasi." };
+    return { success: false, error: error.message || "Gagal melakukan verifikasi login." };
   }
 }
 
@@ -63,7 +87,7 @@ export async function loginUserAction(email: string, password: string) {
 
 export async function getMagangList() {
   try {
-    const list = await sql`
+    const stmt = db.prepare(`
       SELECT 
         id, 
         nama, 
@@ -77,7 +101,8 @@ export async function getMagangList() {
         file_data as "fileData"
       FROM rsj_magang
       ORDER BY created_at DESC
-    `;
+    `);
+    const list = stmt.all();
     return { success: true, data: list as any[] };
   } catch (error: any) {
     console.error("getMagangList error:", error);
@@ -88,10 +113,22 @@ export async function getMagangList() {
 export async function addMagang(data: Omit<MagangData, "id">) {
   const id = `m-${Date.now()}`;
   try {
-    await sql`
+    const stmt = db.prepare(`
       INSERT INTO rsj_magang (id, nama, universitas, jurusan, periode_mulai, periode_selesai, unit_kerja, status, file_name, file_data)
-      VALUES (${id}, ${data.nama}, ${data.universitas}, ${data.jurusan}, ${data.periodeMulai}, ${data.periodeSelesai}, ${data.unitKerja}, ${data.status}, ${data.fileName || null}, ${data.fileData || null})
-    `;
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      id,
+      data.nama,
+      data.universitas,
+      data.jurusan,
+      data.periodeMulai,
+      data.periodeSelesai,
+      data.unitKerja,
+      data.status,
+      data.fileName || null,
+      data.fileData || null
+    );
     return { success: true, id };
   } catch (error: any) {
     console.error("addMagang error:", error);
@@ -104,21 +141,29 @@ export async function updateMagang(id: string, updatedData: Partial<Omit<MagangD
     if (Object.keys(updatedData).length === 0) return { success: true };
     
     if (updatedData.status && Object.keys(updatedData).length === 1) {
-      await sql`
+      const stmt = db.prepare(`
         UPDATE rsj_magang
-        SET status = ${updatedData.status}
-        WHERE id = ${id}
-      `;
+        SET status = ?
+        WHERE id = ?
+      `);
+      stmt.run(updatedData.status, id);
     } else {
-      await sql`
+      const stmt = db.prepare(`
         UPDATE rsj_magang
         SET 
-          nama = COALESCE(${updatedData.nama || null}, nama),
-          universitas = COALESCE(${updatedData.universitas || null}, universitas),
-          jurusan = COALESCE(${updatedData.jurusan || null}, jurusan),
-          status = COALESCE(${updatedData.status || null}, status)
-        WHERE id = ${id}
-      `;
+          nama = COALESCE(?, nama),
+          universitas = COALESCE(?, universitas),
+          jurusan = COALESCE(?, jurusan),
+          status = COALESCE(?, status)
+        WHERE id = ?
+      `);
+      stmt.run(
+        updatedData.nama || null,
+        updatedData.universitas || null,
+        updatedData.jurusan || null,
+        updatedData.status || null,
+        id
+      );
     }
     return { success: true };
   } catch (error: any) {
@@ -129,10 +174,11 @@ export async function updateMagang(id: string, updatedData: Partial<Omit<MagangD
 
 export async function deleteMagang(id: string) {
   try {
-    await sql`
+    const stmt = db.prepare(`
       DELETE FROM rsj_magang
-      WHERE id = ${id}
-    `;
+      WHERE id = ?
+    `);
+    stmt.run(id);
     return { success: true };
   } catch (error: any) {
     console.error("deleteMagang error:", error);
@@ -144,7 +190,7 @@ export async function deleteMagang(id: string) {
 
 export async function getPenelitianList() {
   try {
-    const list = await sql`
+    const stmt = db.prepare(`
       SELECT 
         id, 
         nama, 
@@ -157,7 +203,8 @@ export async function getPenelitianList() {
         file_data as "fileData"
       FROM rsj_penelitian
       ORDER BY created_at DESC
-    `;
+    `);
+    const list = stmt.all();
     return { success: true, data: list as any[] };
   } catch (error: any) {
     console.error("getPenelitianList error:", error);
@@ -168,10 +215,21 @@ export async function getPenelitianList() {
 export async function addPenelitian(data: Omit<PenelitianData, "id">) {
   const id = `p-${Date.now()}`;
   try {
-    await sql`
+    const stmt = db.prepare(`
       INSERT INTO rsj_penelitian (id, nama, institusi, judul_penelitian, periode_mulai, periode_selesai, status, file_name, file_data)
-      VALUES (${id}, ${data.nama}, ${data.institusi}, ${data.judulPenelitian}, ${data.periodeMulai}, ${data.periodeSelesai}, ${data.status}, ${data.fileName || null}, ${data.fileData || null})
-    `;
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      id,
+      data.nama,
+      data.institusi,
+      data.judulPenelitian,
+      data.periodeMulai,
+      data.periodeSelesai,
+      data.status,
+      data.fileName || null,
+      data.fileData || null
+    );
     return { success: true, id };
   } catch (error: any) {
     console.error("addPenelitian error:", error);
@@ -184,21 +242,29 @@ export async function updatePenelitian(id: string, updatedData: Partial<Omit<Pen
     if (Object.keys(updatedData).length === 0) return { success: true };
     
     if (updatedData.status && Object.keys(updatedData).length === 1) {
-      await sql`
+      const stmt = db.prepare(`
         UPDATE rsj_penelitian
-        SET status = ${updatedData.status}
-        WHERE id = ${id}
-      `;
+        SET status = ?
+        WHERE id = ?
+      `);
+      stmt.run(updatedData.status, id);
     } else {
-      await sql`
+      const stmt = db.prepare(`
         UPDATE rsj_penelitian
         SET 
-          nama = COALESCE(${updatedData.nama || null}, nama),
-          institusi = COALESCE(${updatedData.institusi || null}, institusi),
-          judul_penelitian = COALESCE(${updatedData.judulPenelitian || null}, judul_penelitian),
-          status = COALESCE(${updatedData.status || null}, status)
-        WHERE id = ${id}
-      `;
+          nama = COALESCE(?, nama),
+          institusi = COALESCE(?, institusi),
+          judul_penelitian = COALESCE(?, judul_penelitian),
+          status = COALESCE(?, status)
+        WHERE id = ?
+      `);
+      stmt.run(
+        updatedData.nama || null,
+        updatedData.institusi || null,
+        updatedData.judulPenelitian || null,
+        updatedData.status || null,
+        id
+      );
     }
     return { success: true };
   } catch (error: any) {
@@ -209,10 +275,11 @@ export async function updatePenelitian(id: string, updatedData: Partial<Omit<Pen
 
 export async function deletePenelitian(id: string) {
   try {
-    await sql`
+    const stmt = db.prepare(`
       DELETE FROM rsj_penelitian
-      WHERE id = ${id}
-    `;
+      WHERE id = ?
+    `);
+    stmt.run(id);
     return { success: true };
   } catch (error: any) {
     console.error("deletePenelitian error:", error);

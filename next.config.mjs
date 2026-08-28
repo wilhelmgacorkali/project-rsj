@@ -4,4 +4,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-// or next.config.js if preferred, but mjs works great
