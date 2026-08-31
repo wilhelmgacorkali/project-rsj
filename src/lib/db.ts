@@ -2,12 +2,39 @@ import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
 
+// Determine the database path
+let dbPath = path.join(process.cwd(), "rsj.db");
+
+// On Vercel, the environment is read-only, so we copy the database file to /tmp
+const isVercel = process.env.VERCEL === "1" || process.env.NOW_BUILDER !== undefined;
+
+if (isVercel) {
+  const tmpDbPath = path.join("/tmp", "rsj.db");
+  try {
+    // If the database does not exist in /tmp, copy it from the bundled app directory
+    if (!fs.existsSync(tmpDbPath)) {
+      if (fs.existsSync(dbPath)) {
+        fs.copyFileSync(dbPath, tmpDbPath);
+        console.log("Database file successfully copied to /tmp/rsj.db");
+      } else {
+        console.log("Source database file rsj.db not found at:", dbPath);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to copy database to /tmp:", err);
+  }
+  dbPath = tmpDbPath;
+}
+
 // Initialize local SQLite database instance
-const dbPath = path.join(process.cwd(), "rsj.db");
 const db = new Database(dbPath);
 
 // Enable WAL (Write-Ahead Logging) for optimal performance and concurrency
-db.pragma("journal_mode = WAL");
+try {
+  db.pragma("journal_mode = WAL");
+} catch (err) {
+  console.error("Failed to set journal_mode = WAL:", err);
+}
 
 // Initialize tables if they do not exist
 function initDb() {
